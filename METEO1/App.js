@@ -1,54 +1,67 @@
-import React,{ useEffect, useState} from 'react';
-import {Text, View, StyleSheet } from 'react-native';
-import Constants from 'expo-constants';
-import * as Location from "expo-location" 
-import axios from "axios"
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image } from 'react-native';
 
-const API_URL = (lat, lon) =>  `Https://api.openweathermap.org/data/2.5/forecast?lat=${lat}& lon=${lon}&appid=d200832956edaca95a59aa25a27fe98b&lang=fr&units=metric`
+const API_KEY = 'd200832956edaca95a59aa25a27fe98b';
 
-export default function App() {
-  const [loading, setLocation] = useState(null)
+const WeatherApp = () => {
+  const [weatherData, setWeatherData] = useState(null);
 
-  useEffesct(() => {
-    const getCoordinates = async () => {
-     const { status} = await Location.requestForegroundPermissionsAsync()
-     if (status !== "granted"){
-      return
-     }
-     const userLocation = await Location.getCurrentPositionAsync()
-     getWeather(userLocation)
+  useEffect(() => {
+    fetchWeatherData();
+  }, []);
+
+  const fetchWeatherData = async () => {
+    try {
+      const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=tunisia&appid=${API_KEY}&units=metric`);
+      const data = await response.json();
+      setWeatherData(data);
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
     }
-    getCoordinates()
-  }, [])
-    const getWeather = async (location ) => {
-      try {
-        const response = await axios.get(API_URL(location.coords.latitude, location.coords. longitude))
-      }catch(e) {
-        response.data
-        setLoading(false)
-        console.log(" Erreur dans getWeather ")
-      }
-      
-    }
+  };
 
-  if (loading){
-    return <View style={styles.container}>
-      
-    </View>
-  }
-        
   return (
     <View style={styles.container}>
-      
+      {weatherData && (
+        <View style={styles.weatherContainer}>
+          <Text style={styles.temperature}>{weatherData.main.temp}°C</Text>
+          <Image
+            style={styles.weatherIcon}
+            source={{
+              uri: `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`,
+            }}
+          />
+          <Text style={styles.weatherDescription}>{weatherData.weather[0].description}</Text>
+        </View>
+      )}
     </View>
   );
-}
+};
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'centre',
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#ecf0f1',
-    padding: 8,
-  }
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'gray',
+  },
+  weatherContainer: {
+    alignItems: 'center',
+  },
+  temperature: {
+    fontSize: 48,
+    fontWeight: 'bold',
+  },
+  weatherIcon: {
+    width: 100,
+    height: 100,
+    marginVertical: 20,
+  },
+  weatherDescription: {
+    textTransform: 'capitalize',
+  },
 });
+
+export default WeatherApp;
