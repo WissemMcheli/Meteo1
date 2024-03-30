@@ -6,8 +6,12 @@ import TextInputWithSearch from './TextInputWithSearch';
 import LocationDisplay from './LocationDisplay';
 import WeatherDisplay from './WeatherDisplay';
 import ForecastDisplay from './ForecastDisplay';
-import { getWeatherData, getForecastData, filterForecast } from '../fun/weatherFunctions';
+import { getWeatherData } from '../fun/wdata';
+import { getForecastData } from '../fun/forecastdata';
+import { filterForecast } from '../fun/filterforecast';
+const API_KEY = 'd200832956edaca95a59aa25a27fe98b';
 import One from '../../assets/ahmed.jpg';
+
 
 const Home = () => {
   const [city, setCity] = useState('');
