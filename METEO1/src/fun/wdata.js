@@ -1,5 +1,5 @@
-import {API_KEY} from './apiKeys';
 
+import {API_KEY} from '@env'
 export const getWeatherData = async (city) => {
     console.log(API_KEY);
     try {
