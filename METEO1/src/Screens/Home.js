@@ -1,37 +1,14 @@
-
-
-import React, { useState } from 'react';
+import React from 'react';
 import { View, ImageBackground, SafeAreaView, StyleSheet } from 'react-native';
 import TextInputWithSearch from './TextInputWithSearch';
 import LocationDisplay from './LocationDisplay';
 import WeatherDisplay from './WeatherDisplay';
 import ForecastDisplay from './ForecastDisplay';
-import { getWeatherData } from '../fun/wdata';
-import { getForecastData } from '../fun/forecastdata';
-import { filterForecast } from '../fun/filterforecast';
-const API_KEY = 'd200832956edaca95a59aa25a27fe98b';
+import useWeather from '../fun/CustomHook';
 import One from '../../assets/ahmed.jpg';
 
-
 const Home = () => {
-  const [city, setCity] = useState('');
-  const [weather, setWeather] = useState({});
-  const [forecast, setForecast] = useState([]);
-
-  const getWeather = async () => {
-    if (!city.trim()) return;
-
-    try {
-      const weatherData = await getWeatherData(city);
-      setWeather(weatherData);
-
-      const forecastData = await getForecastData(city);
-      const filteredForecast = filterForecast(forecastData);
-      setForecast(filteredForecast);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+  const { city, setCity, weather, forecast, getWeather } = useWeather();
 
   return (
     <ImageBackground source={One} style={styles.image}>
